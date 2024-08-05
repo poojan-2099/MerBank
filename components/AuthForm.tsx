@@ -18,17 +18,14 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
-import SignUp from '@/app/(auth)/sign-up/page';
-import SignIn from '@/app/(auth)/sign-in/page';
 import CustomInput from './CustomInput';
 import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { signIn, signUp } from '@/lib/actions/user.actions';
+import { getLoggedInUser, signIn, signUp } from '@/lib/actions/user.actions';
+import PlaidLink from './PlaidLink';
 
-
-const AuthForm = ({type}:{type:string}) => {
+const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +47,7 @@ const AuthForm = ({type}:{type:string}) => {
 
       try {
         // Sign up with Appwrite & create plaid token
+        
         if(type === 'sign-up') {
           const userData = {
             firstName: data.firstName!,
@@ -94,7 +92,7 @@ const AuthForm = ({type}:{type:string}) => {
               height={34}
               alt="Horizon logo"
             />
-            <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">Horizon</h1>
+            <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">MerBank</h1>
           </Link>
 
           <div className="flex flex-col gap-1 md:gap-3">
@@ -115,12 +113,12 @@ const AuthForm = ({type}:{type:string}) => {
           </div>
       </header>
       {user ? (
-        <div className='flex flex-col gap-4'>
-
+        <div className="flex flex-col gap-4">
+          <PlaidLink user={user} variant="primary" />
         </div>
-      ):(
+      ): (
         <>
-        <Form {...form}>
+          <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               {type === 'sign-up' && (
                 <>
@@ -158,6 +156,7 @@ const AuthForm = ({type}:{type:string}) => {
               </div>
             </form>
           </Form>
+
           <footer className="flex justify-center gap-1">
             <p className="text-14 font-normal text-gray-600">
               {type === 'sign-in'
